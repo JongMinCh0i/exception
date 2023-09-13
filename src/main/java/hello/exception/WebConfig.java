@@ -2,13 +2,16 @@ package hello.exception;
 
 import hello.exception.Filter.LogFilter;
 import hello.exception.interceptor.LogInterceptor;
+import hello.exception.resolver.MyHandlerExceptionResolver;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -21,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/css/**", "*.ico", "/error", "/error-page/**");
     }
 
-//    @Bean
+    //    @Bean
     public FilterRegistrationBean logFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new LogFilter());
@@ -29,5 +32,13 @@ public class WebConfig implements WebMvcConfigurer {
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ERROR);
         return filterRegistrationBean;
+    }
+
+    /**
+     * 기본 설정을 유지하면서 추가
+     */
+    @Override
+    public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+        resolvers.add(new MyHandlerExceptionResolver());
     }
 }
